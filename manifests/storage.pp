@@ -13,16 +13,6 @@ class bacula::storage {
       ensure => 'present';
   }
 
-  # Configure the name and hostname for the Storage Daemon (i.e. this server)
-  $safe_storage_hostname = $fqdn
-  $safe_storage_name     = $hostname
-  # And import the name of the Director from the node configuration
-  $safe_director_hostname = $bacula_director_server
-  $safe_director_name     = $bacula_director_server ? {
-    /^([a-z0-9_-]+)\./ => $1,
-    default            => $bacula_director_server
-  }
-
   # Create the configuration for the Storage Daemon and make sure the directory
   # for the per-Client configuration is created before we run the realization
   # for the exported files below. Also make sure that the storage locations are
@@ -48,7 +38,7 @@ class bacula::storage {
       group   => 'bacula',
       content => '# DO NOT EDIT - Managed by Puppet - DO NOT REMOVE',
       require => File['/etc/bacula/bacula-sd.d'];
-   ['$bacula_storage_dir', '$bacula_storage_dir/default']:
+   ["$bacula_storage_dir", "$bacula_storage_dir/default"]:
       ensure  => 'directory',
       owner   => 'bacula',
       group   => 'tape',
@@ -65,7 +55,7 @@ class bacula::storage {
       hasrestart => true;
   }
 
-  # Finally, realise all the virtual exported configruation from the clients
+  # Realise all the virtual exported configruation from the clients
   # that this server needs to be configured to manage
-  File <<| tag == "bacula_storage_$safe_storage_name" |>>
+  File <<| tag == "bacula_storage_$bacula_storage_server" |>>
 }

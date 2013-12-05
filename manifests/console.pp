@@ -11,13 +11,6 @@ class bacula::console {
       ensure => 'present';
   }
 
-  # Import the name of the Director from the node configuration
-  $safe_director_hostname = $bacula_director_server
-  $safe_director_name     = $bacula_director_server ? {
-    /^([a-z0-9_-]+)\./ => $1,
-    default            => $bacula_director_server
-  }
-
   # Using the above settings (and $bacula_console_password), write
   # the configuration for bacula-console (bconsole)
   file {

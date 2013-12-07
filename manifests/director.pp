@@ -38,6 +38,11 @@ class bacula::director inherits bacula::config {
       require => File['/etc/bacula/bacula-dir.d'];
   }
 
+  # Realise all the virtual files created by all the clients that
+  # this server needs to be configured to manage
+  Concat <<| tag == "bacula_director_$bacula_director_server" |>>
+  Concat::Fragment <<| tag == "bacula_director_$bacula_director_server" |>> ~>
+
   # Register the Service so we can manage it through Puppet
   service {
     'bacula-director':
@@ -47,9 +52,4 @@ class bacula::director inherits bacula::config {
       hasstatus  => true,
       hasrestart => true;
   }
-
-  # Realise all the virtual files created by all the clients that
-  # this server needs to be configured to manage
-  Concat <<| tag == "bacula_director_$bacula_director_server" |>>
-  Concat::Fragment <<| tag == "bacula_director_$bacula_director_server" |>>
 }

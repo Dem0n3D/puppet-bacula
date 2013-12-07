@@ -44,6 +44,10 @@ class bacula::storage {
       group   => 'tape',
       mode    => '0750';
   }
+  
+  # Realise all the virtual exported configruation from the clients
+  # that this server needs to be configured to manage
+  File <<| tag == "bacula_storage_$bacula_storage_server" |>> ~>
 
   # Register the Service so we can manage it through Puppet
   service {
@@ -54,8 +58,4 @@ class bacula::storage {
       hasstatus  => true,
       hasrestart => true;
   }
-
-  # Realise all the virtual exported configruation from the clients
-  # that this server needs to be configured to manage
-  File <<| tag == "bacula_storage_$bacula_storage_server" |>>
 }

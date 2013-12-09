@@ -43,13 +43,9 @@ case ${level} in
         
         ${flush_logs}
         
-        cd $backup_dir
+        rm $backup_dir/mysql-bin.*
 
-        rm mysql-bin.*
-        
-        for i in $logs; do
-             ln -f $i
-        done
+        cp -p $logs $backup_dir
         ;;
     * )
         echo "Unknown backup level!"

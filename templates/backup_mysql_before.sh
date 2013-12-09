@@ -4,11 +4,17 @@
 
 level=$1
 
-dbdump="mysqldump --single-transaction --master-data=2 --flush-logs --all-databases -u<%= mysql_backup_user %> -p<%= mysql_backup_password %>"
+<% if @mysql_backup_password and @mysql_backup_password != "" then -%>
+dbpass="-p<%= mysql_backup_password %>"
+<% else -%>
+dbpass=""
+<% end -%>
+
+dbdump="mysqldump --single-transaction --master-data=2 --flush-logs --all-databases -u<%= mysql_backup_user %> $dbpass"
 compress="<%= mysql_backup_compress %>"
 fulldb_name="<%= mysql_backup_filename %>"
 
-flush_logs="mysqladmin flush-logs -u<%= mysql_backup_user %> -p<%= mysql_backup_password %>"
+flush_logs="mysqladmin flush-logs -u<%= mysql_backup_user %> $dbpass"
 
 backup_dir="<%= mysql_backup_dir %>"
 logs_dir="<%= mysql_logs_dir %>"

@@ -39,11 +39,11 @@ case ${level} in
             exit 2
         fi
         
+        ${flush_logs}
+
         logs=$(find $logs_dir -newer $backup_dir/${fulldb_name} -name "mysql-bin.*" | grep -v "index") # select all binary logs since last full backup
         
-        ${flush_logs}
-        
-        rm $backup_dir/mysql-bin.*
+        rm $backup_dir/mysql-bin.* || echo 1
 
         cp -p $logs $backup_dir
         ;;

@@ -3,10 +3,13 @@
 # location and import all exported configuration files and directories for
 # this server.
 
-class bacula::storage {
+class bacula::storage(
+  $bacula_group = 'tape'
+) {
   # Do the configuration checks before we continue
   require bacula::config
 
+  warning("grioup: $bacula_group")
   # Make sure the Storage Daemon is installed (with mysql)
   package {
     ['bacula-sd-mysql']:
@@ -21,27 +24,27 @@ class bacula::storage {
     '/etc/bacula/bacula-sd.conf':
       ensure  => 'present',
       owner   => 'bacula',
-      group   => 'bacula',
+      group   => "$bacula_group",
       content => template('bacula/bacula-sd.conf'),
       notify  => Service['bacula-sd'],
       require => Package['bacula-sd-mysql'];
     '/etc/bacula/bacula-sd.d':
       ensure  => 'directory',
       owner   => 'bacula',
-      group   => 'bacula',
+      group   => "$bacula_group",
       require => Package['bacula-sd-mysql'];
   # Create an empty while which will make sure that the last line of
   # the bacula-sd.conf file will always run correctly.
     '/etc/bacula/bacula-sd.d/empty.conf':
       ensure  => 'present',
       owner   => 'bacula',
-      group   => 'bacula',
+      group   => "$bacula_group",
       content => '# DO NOT EDIT - Managed by Puppet - DO NOT REMOVE',
       require => File['/etc/bacula/bacula-sd.d'];
    ["$bacula_storage_dir", "$bacula_storage_dir/default"]:
       ensure  => 'directory',
       owner   => 'bacula',
-      group   => 'tape',
+      group   => "$bacula_group",
       mode    => '0750';
   }
   

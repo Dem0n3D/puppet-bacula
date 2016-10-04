@@ -5,7 +5,9 @@
 # the Storage Daemon as well so that they can be configured with the required
 # settings on those boxes as well.
 
-class bacula {
+class bacula(
+  $bacula_group = 'tape'
+) {
   # Do the configuration checks before we continue
   require bacula::config
 
@@ -36,7 +38,7 @@ class bacula {
       ensure  => 'directory',
       tag     => "bacula_storage_$bacula_storage_server",
       owner   => 'bacula',
-      group   => 'tape',
+      group   => "$bacula_group",
       mode    => '0750',
       require => File["$bacula_storage_dir"];
   }

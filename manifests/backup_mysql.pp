@@ -33,7 +33,7 @@ define bacula::backup_mysql(
   }
 
   bacula::fileset { "$fqdn:fileset_$title":
-    include => ["File = $mysql_backup_dir!Options=signature=MD5,compression=GZIP"]
+    include => ["File = $mysql_backup_dir!Options=signature=SHA1,compression=GZIP,accurate=1"]
   }
 
   bacula::job { "${hostname}:$title":
